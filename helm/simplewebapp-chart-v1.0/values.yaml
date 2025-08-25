@@ -1,1 +1,38 @@
+replicaCount: 1
 
+image:
+  repository: nginx
+  pullPolicy: IfNotPresent
+  tag: "latest" # Using a stable nginx image
+
+service:
+  type: NodePort # Easier to access in Minikube/Kind for testing
+  port: 80
+
+# Content for the index.html page for v1.0
+htmlContent: |
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>SimpleWebApp v1.0</title>
+      <style>
+          body { font-family: sans-serif; background-color: #ADD8E6; /* Light Blue */ text-align: center; padding-top: 50px; }
+          h1 { color: #000080; /* Navy */ }
+          p { font-size: 1.2em; }
+          .version-info { margin-top: 20px; padding:10px; background-color: #FFFACD; border: 1px solid #FFD700;}
+          .health { color: green; font-weight: bold; }
+      </style>
+  </head>
+  <body>
+      <h1>Welcome to SimpleWebApp - Version 1.0</h1>
+      <p>This is the initial version of our amazing application.</p>
+      <div class="version-info">
+          App Version: 1.0<br>
+          DB Schema Mock: 1.0<br>
+          DTA Component Mock: 1.0
+      </div>
+      <p class="health" id="healthStatus">Health Status: OK</p>
+  </body>
+  </html>
