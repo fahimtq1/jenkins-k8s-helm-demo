@@ -83,7 +83,7 @@ cd jenkins-k8s-mockapp
 
 🔑 **Create Credential**
 - **Kind:** Secret text  
-- **ID:** `cks-test-db-password`  
+- **ID:** `test-db-password`  
 - **Secret:** `testpass`
 
 📦 **Create Pipeline Job**
