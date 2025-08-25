@@ -58,7 +58,7 @@ You need **3 Virtual Machines**:
    - PostgreSQL server configured to allow connections from Jenkins VM IP
 
 4. **Networking** 🌐
-   - All VMs must be on the same network segment, e.g. `192.168.50.0/24`
+   - All VMs must be on the same network segment
 
 ---
 
@@ -73,7 +73,7 @@ Follow the detailed guide in `docs/ENVIRONMENT_SETUP.md` to:
 
 ### 2️⃣ Repository Setup
 ```bash
-git clone https://github.com/<your-username>/jenkins-k8s-mockapp.git
+git clone https://github.com/fahimtq1/jenkins-k8s-helm-demo.git
 cd jenkins-k8s-mockapp
 ```
 
