@@ -1,8 +1,15 @@
-# Jenkins - Kubernetes Mock App Upgrade Pipeline
+# 🚀 Jenkins - Kubernetes Mock App Upgrade Pipeline
 
-Automated upgrade pipeline for a mock web app ("SimpleWebApp") on Kubernetes with a PostgreSQL backend. This project demonstrates a full CI/CD cycle, including health checks, database backup, schema upgrades, Helm-based application deployment, and artifact archiving.
+Automated **CI/CD upgrade pipeline** for a mock web app (**SimpleWebApp**) on Kubernetes with a **PostgreSQL backend**.  
+This project demonstrates:
+- ✅ Health checks
+- 💾 Database backup & schema upgrade
+- ⎈ Helm-based application deployment
+- 📦 Artifact archiving
 
-## Architecture Overview
+---
+
+## 🏗️ Architecture Overview
 
 ```mermaid
 flowchart LR
@@ -31,70 +38,94 @@ flowchart LR
         DB[(PostgreSQL)]
         DBT -- "psql/pg_dump" --> DB
     end
+```
 
-Prerequisites
-3 x Virtual Machines: Jenkins VM, Kubernetes VM, PostgreSQL VM.
+---
 
-Jenkins VM: Jenkins controller/agent with labels jenkins-vm. Must have kubectl, helm, psql, pg_dump, curl installed.
+## 📋 Prerequisites
 
-Kubernetes VM: Minikube cluster with 1 control-plane and 1 worker node, CNI (e.g., Flannel) installed.
+You need **3 Virtual Machines**:
 
-PostgreSQL VM: PostgreSQL server configured to allow connections from the Jenkins VM IP.
+1. **Jenkins VM** 🧩
+   - Jenkins controller/agent with label `jenkins-vm`
+   - Installed tools: `kubectl`, `helm`, `psql`, `pg_dump`, `curl`
 
-Network: VMs must be on the same network segment (e.g., 192.168.50.0/24).
+2. **Kubernetes VM** ⎈
+   - Minikube cluster with **1 control-plane** + **1 worker node**
+   - CNI installed (e.g., **Flannel**)
 
-Quick Start
-1. Environment Setup
-Follow the detailed guide in docs/ENVIRONMENT_SETUP.md to prepare your VMs and deploy the initial v1.0 state.
+3. **PostgreSQL VM** 🗄️
+   - PostgreSQL server configured to allow connections from Jenkins VM IP
 
-2. Repository Setup
+4. **Networking** 🌐
+   - All VMs must be on the same network segment, e.g. `192.168.50.0/24`
+
+---
+
+## ⚡ Quick Start
+
+### 1️⃣ Environment Setup
+Follow the detailed guide in `docs/ENVIRONMENT_SETUP.md` to:
+- Prepare your VMs
+- Deploy the **initial v1.0 state**
+
+---
+
+### 2️⃣ Repository Setup
 ```bash
 git clone https://github.com/<your-username>/jenkins-k8s-mockapp.git
 cd jenkins-k8s-mockapp
 ```
 
-3. Configure Jenkins
-Create Credential:
+---
 
-Kind: Secret text
+### 3️⃣ Configure Jenkins
 
-ID: cks-test-db-password
+🔑 **Create Credential**
+- **Kind:** Secret text  
+- **ID:** `cks-test-db-password`  
+- **Secret:** `testpass`
 
-Secret: testpass
+📦 **Create Pipeline Job**
+- New Item → **Pipeline**
+- **Name:** `app-upgrade-pipeline`
+- **Definition:** Pipeline script from SCM
+- **SCM:** Git
+- **Repository URL:** Your fork's URL
+- **Script Path:** `Jenkinsfile`
+- Save ✅
 
-Create Pipeline Job:
+---
 
-New Item → Pipeline
+### 4️⃣ Run the Pipeline
+1. Open the job → Click **Build with Parameters**
+2. Verify parameters (**IPs, paths**) match your environment
+3. Click **Build** ▶️
 
-Name: app-upgrade-pipeline
+---
 
-Definition: Pipeline script from SCM
+## 🔄 Pipeline Stages
 
-SCM: Git
+1. **Prepare Environment** 📂
+   - Creates directory structure for backups & health checks
 
-Repository URL: Your fork's URL
+2. **Pre-Flight** 🩺
+   - Runs health check on **v1.0 app**
+   - Takes `pg_dump` backup of DB
 
-Script Path: Jenkinsfile
+3. **Apply DB Schema** 🗄️
+   - Executes `v2.0_upgrade.sql` to upgrade DB schema
 
-Save.
+4. **Helm Upgrade** ⎈
+   - Deploys **v2.0 Helm chart**
+   - Waits for rollout to complete
 
-4. Run the Pipeline
-Open the job and click "Build with Parameters".
+5. **Mock DTA Upgrade** 🔄
+   - Runs mock script simulating **3rd-party integration update**
 
-Verify parameters (IPs, paths) match your environment.
+6. **Post-Upgrade Health Check** ✅
+   - Verifies **v2.0 app** is healthy & serving correct content
 
-Click "Build".
+---
 
-Pipeline Stages
-Prepare Environment: Creates directory structure for backups and health checks.
-
-Pre-Flight: Performs a health check on the v1.0 app and takes a pg_dump backup of the database.
-
-Apply DB Schema: Executes the v2.0_upgrade.sql script to upgrade the database.
-
-Helm Upgrade: Upgrades the Kubernetes deployment to the v2.0 Helm chart and waits for rollout.
-
-Mock DTA Upgrade: Executes a mock script to simulate updating a third-party integration system.
-
-Post-Upgrade Health Check: Verifies the v2.0 app is healthy and serving the correct content.
-
+✨ Now you have a **fully automated app upgrade pipeline** with database migration, Helm deployment, and health validation!
