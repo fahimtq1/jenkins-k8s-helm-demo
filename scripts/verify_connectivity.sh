@@ -1,16 +1,36 @@
-#!/usr/bin/env bash
-set -euo pipefail
+#!/bin/bash
+#
+# A simple script to verify network connectivity to the test environment VMs.
+#
+# Usage: ./verify_connectivity.sh <K8S_VM_IP> <POSTGRES_VM_IP>
 
-NODEPORT="${1:-}"
-K8S_API_LOCAL_PORT="${2:-8443}"
+set -e
 
-set -x
-# Check if ports are listening locally
-lsof -i :${K8S_API_LOCAL_PORT} || echo "No process listening on API port $K8S_API_LOCAL_PORT"
-lsof -i :${NODEPORT} || echo "No process listening on NodePort $NODEPORT"
+K8S_VM_IP=$1
+POSTGRES_VM_IP=$2
+K8S_API_PORT=8443
+POSTGRES_PORT=5432
 
-# Test application connectivity
-curl -I "http://127.0.0.1:${NODEPORT}/" || echo "Curl to app failed"
+if [ -z "$K8S_VM_IP" ] || [ -z "$POSTGRES_VM_IP" ]; then
+    echo "Error: Both Kubernetes and PostgreSQL VM IPs are required."
+    echo "Usage: $0 <K8S_VM_IP> <POSTGRES_VM_IP>"
+    exit 1
+fi
 
-# Test Kubernetes API connectivity (insecure for testing)
-kubectl --server="https://127.0.0.1:${K8S_API_LOCAL_PORT}" --insecure-skip-tls-verify get nodes -o wide || echo "kubectl check failed"
+echo "--- Verifying Connectivity ---"
+
+# Check basic ping
+echo -n "Pinging Kubernetes VM (${K8S_VM_IP})... "
+ping -c 1 -W 2 ${K8S_VM_IP} > /dev/null 2>&1 && echo "SUCCESS" || echo "FAILED"
+
+echo -n "Pinging PostgreSQL VM (${POSTGRES_VM_IP})... "
+ping -c 1 -W 2 ${POSTGRES_VM_IP} > /dev/null 2>&1 && echo "SUCCESS" || echo "FAILED"
+
+# Check port connectivity using nc (netcat)
+echo -n "Checking K8s API port (${K8S_VM_IP}:${K8S_API_PORT})... "
+nc -z -w 2 ${K8S_VM_IP} ${K8S_API_PORT} && echo "SUCCESS" || echo "FAILED"
+
+echo -n "Checking PostgreSQL port (${POSTGRES_VM_IP}:${POSTGRES_PORT})... "
+nc -z -w 2 ${POSTGRES_VM_IP} ${POSTGRES_PORT} && echo "SUCCESS" || echo "FAILED"
+
+echo "--- Verification Complete ---"
