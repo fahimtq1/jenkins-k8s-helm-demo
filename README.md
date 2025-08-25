@@ -131,30 +131,41 @@ cd jenkins-k8s-helm-demo
 ## 📁 Directory Layout
 
 ```text
-jenkins-k8s-mockapp/
-├── Jenkinsfile                 # Main pipeline definition
-├── README.md                   # This file
-├── .gitignore                  # Git ignore rules
+jenkins-k8s-helm-demo/
+├── Jenkinsfile
+├── README.md
+├── .gitignore
 ├── scripts/
-│   ├── setup_tunnel.sh         # Establish SSH tunnels (API + NodePort)
-│   ├── check_nodeport.sh       # Find a Service's NodePort
-│   └── verify_connectivity.sh  # Sanity-check tunnel & service reachability
+│   ├── setup_tunnel.sh
+│   ├── check_nodeport.sh
+│   └── verify_connectivity.sh
 ├── docs/
-│   ├── ENVIRONMENT_SETUP.md    # Detailed VM setup guide
-│   ├── TROUBLESHOOTING.md      # Common issues & resolutions
-│   ├── ARCHITECTURE.md         # Architecture walkthrough & diagrams
-│   └── LINKEDIN_POST.md        # Prewritten LinkedIn post to share your build
+│   ├── ENVIRONMENT_SETUP.md
+│   ├── TROUBLESHOOTING.md
+│   ├── ARCHITECTURE.md
+│   └── LINKEDIN_POST.md
 ├── sql/
-│   └── v2.0_upgrade.sql        # Database schema upgrade script
-└── helm/
-    └── simplewebapp-chart-v2.0/
-        ├── Chart.yaml
-        ├── values.yaml
-        └── templates/
-            ├── deployment.yaml
-            ├── service.yaml
-            ├── configmap.yaml
-            └── _helpers.tpl
+│   └── v2.0_upgrade.sql
+├── helm/
+│   ├── simplewebapp-chart-v1.0/
+│   │   ├── Chart.yaml
+│   │   ├── values.yaml
+│   │   └── templates/
+│   │       ├── deployment.yaml
+│   │       ├── service.yaml
+│   │       ├── configmap.yaml
+│   │       └── _helpers.tpl
+│   └── simplewebapp-chart-v2.0/
+│       ├── Chart.yaml
+│       ├── values.yaml
+│       └── templates/
+│           ├── deployment.yaml
+│           ├── service.yaml
+│           ├── configmap.yaml
+│           └── _helpers.tpl
+└── mock-components/
+    └── app-mock/
+        └── app.sh
 ```
 
 ---
